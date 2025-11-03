@@ -1,0 +1,26 @@
+{
+    "schemaVersion": 1,
+    "name": "${mod_name}",
+    "id": "${mod_id}",
+    "version": "${mod_version}",
+    "description": "${mod_description}",
+    "authors": [
+        "Roland A"
+    ],
+    "icon": "assets/icon.png",
+    "license": "ARR",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "roland_a.${mod_id}.MainEntryPoint"
+        ]
+    },
+    "mixins": [
+        "${mod_id}.mixins.json"
+    ],
+    "accessWidener": "${mod_id}.accesswidener",
+    "depends": {
+        "minecraft": "=${loaded_mc_version}",
+        "java": ">=${java_version}"
+    }
+}

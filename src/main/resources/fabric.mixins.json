@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "roland_a.no_xp.mixin",
+  "compatibilityLevel": "JAVA_${java_version}",
+  "mixins": [
+    "AnvilMenuMixin",
+    "ExperienceOrbMixin"
+  ],
+  "client": [
+    "AnvilScreenMixin",
+    "GuiMixin"
+  ],
+  "server": [],
+  "refmap": "${ref_map}",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

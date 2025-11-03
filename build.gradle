@@ -1,0 +1,62 @@
+plugins {
+	id("fabric-loom").version("${loom_version}")
+}
+
+dependencies {
+	minecraft("com.mojang:minecraft:${project.loaded_mc_version}")
+	mappings(loom.officialMojangMappings())
+	modImplementation("net.fabricmc:fabric-loader:${project.loader_version}")
+}
+
+project.ext{
+	java_version = { ->
+		def parts = project.loaded_mc_version.tokenize('.').collect { it.toInteger() }
+
+		def major = parts[1]
+		def minor = parts.size() > 2 ? parts[2] : 0
+
+		if (major >= 21 || (major == 20 && minor >= 5)){
+			return 21
+		}
+		if (major >= 18){
+			return 17
+		}
+		if (major >= 17){
+			return 16
+		}
+		return 8
+	}()
+
+	file_name = "${project.mod_id}-${project.mod_version}+mc${project.loaded_mc_version}"
+
+	ref_map = "${file_name}-refmap.json"
+}
+
+base {
+	archivesName = project.file_name
+}
+
+loom{
+	accessWidenerPath = file("src/main/resources/fabric.accesswidener")
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = project.java_version
+}
+
+processResources {
+	def properties = project.properties
+
+	eachFile { fileCopyDetails ->
+		if (fileCopyDetails.name == "fabric.mod.json") {
+			expand(properties)
+		}
+		if (fileCopyDetails.name == "fabric.mixins.json") {
+			expand(properties)
+			fileCopyDetails.name = "${project.mod_id}.mixins.json"
+		}
+		if (fileCopyDetails.name == "fabric.accesswidener") {
+			fileCopyDetails.name = "${project.mod_id}.accesswidener"
+		}
+	}
+}
