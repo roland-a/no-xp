@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"name": "${mod_name}",
+	"id": "${mod_id}",
+	"version": "${mod_version}",
+	"description": "${mod_description}",
+	"authors": [
+		"Roland A"
+	],
+	"icon": "assets/${mod_id}/icon.png",
+	"license": "ARR",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			{
+				"adapter": "kotlin",
+				"value": "roland_a.mc_mods.no_xp.Mod"
+			}
+		]
+	},
+	"mixins": [
+		"${mod_id}.mixins.json"
+	],
+	"accessWidener": "${mod_id}.accesswidener",
+	"depends": {
+		"minecraft": "=${mc_version}",
+		"java": ">=${java_version}",
+		"fabric-language-kotlin": ">=${fabric_kotlin_version}"
+	}
+}

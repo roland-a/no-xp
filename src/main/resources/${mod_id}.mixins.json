@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "roland_a.mc_mods.no_xp.mixin",
+  "compatibilityLevel": "JAVA_${java_version}",
+  "mixins": [
+    "AnvilMenuMixin",
+    "ExperienceOrbMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "client": [
+    "AnvilScreenMixin",
+    "GuiMixin"
+  ]
+}

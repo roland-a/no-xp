@@ -1,0 +1,93 @@
+plugins {
+	id("fabric-loom").version("${fabric_loom_version}")
+	id("org.jetbrains.kotlin.jvm").version("${kotlin_version}")
+	id("org.jetbrains.kotlin.plugin.serialization").version("${kotlin_version}")
+}
+
+ext{
+	java_version = { ->
+		def versionToNum = { String str ->
+			def parts = str.tokenize(".").collect { it.trim().toInteger() }
+
+			def major = parts[0]
+			def minor = parts[1]
+			def patch = parts.size() > 2 ? parts[2] : 0
+
+			return major * 1_00_00 + minor * 1_00 + patch
+		}
+
+		def thisMCVersion = versionToNum(mc_version)
+
+		return (
+			mc_to_java_version
+			.tokenize(",")
+			.collect{
+				def (mc, java) = it.tokenize(":")
+
+				if (thisMCVersion < versionToNum(mc)){
+					return null
+				}
+				return (
+					java
+					.trim()
+					.toInteger()
+				)
+			}
+			.findAll{
+				it != null
+			}
+			.first()
+		)
+	}()
+
+	file_name = "${mod_id}-${mod_version}+mc${mc_version}"
+
+	ref_map = "${file_name}-refmap.json"
+
+	fabric_kotlin_version = "${fabric_kotlin_version_prefix}+kotlin.${kotlin_version}"
+}
+
+dependencies {
+	minecraft("com.mojang:minecraft:${mc_version}")
+	mappings(loom.officialMojangMappings())
+	modImplementation("net.fabricmc:fabric-loader:${fabric_loader_version}")
+    modImplementation("org.jetbrains.kotlin:kotlin-stdlib:${fabric_loader_version}")
+    modImplementation("net.fabricmc:fabric-language-kotlin:${fabric_kotlin_version}")
+	testImplementation("org.junit.jupiter:junit-jupiter:5.10.1")
+	testImplementation("org.mockito:mockito-core:5.14.1")
+}
+
+processResources {
+	eachFile { fileCopyDetails ->
+		fileCopyDetails.name = fileCopyDetails.name.replace("\${mod_id}", mod_id)
+		fileCopyDetails.path = fileCopyDetails.path.replace("\${mod_id}", mod_id)
+
+		if (!fileCopyDetails.name.contains(".json")){
+			return
+		}
+
+		expand(project.properties)
+	}
+}
+
+base {
+	archivesName = file_name
+}
+
+loom{
+	// Loom uses the literal file name
+	// No variable expansion needed here
+	accessWidenerPath = file("src/main/resources/\${mod_id}.accesswidener")
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = java_version
+}
+
+kotlin {
+	jvmToolchain(java_version)
+}
+
+tasks.test {
+	useJUnitPlatform()
+}
