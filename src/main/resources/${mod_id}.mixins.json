@@ -6,6 +6,7 @@
     "AnvilMenuMixin",
     "ExperienceOrbMixin"
   ],
+  "plugin": "roland_a.mc_mods.no_xp.Plugin",
   "injectors": {
     "defaultRequire": 1
   },
